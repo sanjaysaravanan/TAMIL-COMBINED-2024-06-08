@@ -1,0 +1,156 @@
+
+  Authentication & Authorization:
+
+    Authentication:
+      application user -> login (Store the JWT for Authorization )
+      not an application user -> Register & Login (Store the JWT for Authorization )
+    
+    Authorization:  
+      specific rules for specific apis
+        /teachers --> can only be viewed by Teachers ( JWT for Teahcer user )
+        /students --> Students & Teachers ( JWT for Student/Teacher user )
+        /todos --> any authenticated( JWT for normal user ) user can view it
+  
+  Registration Verify Email:
+
+    BE:
+
+      When user is registered,
+        put an extra field called as isVerified: false
+
+        send an email with url as the following,
+          <FE-URL>/verify-user-fe?token=<jwt-token>
+
+      /verify-user ( POST Call )
+        body: 
+          jwt token which contains userinfo ( token will expire in 15mins )
+        
+        gets the token verifies the token, get the useringo and make user's isVerified field as true
+    
+    FE:
+
+      /verify-user-fe
+
+        this page will read the token query parameter ( use hook useSearchParams from react-router-dom ) 
+        then will trigger an api call to /verify-user ( query parameter or POST body)
+
+
+      
+
+      
+
+
+    created a simple ui in frontend for the mail url
+
+    created a simple api to Verify the jwt and set verified flag to true
+
+  Task Ideas
+    Password Reset Flow:
+      1. Forgot Password Page
+          1. Should have a input to take email
+          2. Trigger an API POST call /forgot-password with email ( query param / body )
+          3. Success -> UI should say Email for reseting sent successfully
+          4. Failure -> Please check the email and try again
+      
+      2. BE API /forgot-password
+
+          1. Get email using query param / body
+          2. Check if the user exists
+              Yes, send an email <FE-URL>/reset-password?token=<jwt-token>
+                Response with { msg: 'Password Reset Email Sent successfully', code: 1 }
+              No, send a response status 404 ( user not found ), code: -1
+      
+      3.0. /verify-token 
+          simply accepts a token
+          token valid send success response with email address
+          invalid send error response
+      
+      3. Reset Password Page:
+          1. /reset-password?token=<jwt-token>
+          2. verify the token using /verify-token ( pass the received )
+              Yes, Open the Form with new password
+                Get the password
+                Submit --> trigger email for reset the password /reset-Password
+                body: email, new password
+                backend hash the password and store it with the proper email
+              No, link expired please try again
+      
+      4. BE API /reset-password ( Body: email, new password) 
+                body: email, new password
+                backend hash the password and store it with the proper email
+
+    URL Shortener:
+
+      Login: Refer the node-project & react-fe-with-be
+      Register: Refer the node-project & react-fe-with-be
+
+      Step 1:
+        UI should a have a form for entering the long url
+
+          1. Enter URL and click submit
+          2. Trigger an api to the backend /url-shortner
+              pass (longUrl in the body or params)
+          
+      Step 2:
+        backend will receive the longUrl 
+        longUrl should be mapped with a short url ( <FE-URL>/<url-id> )
+
+        DB should contain:
+          longUrl
+          urlId
+          shortUrl: <FE-URL>/<url-id>
+        
+        send the response back like below
+          {
+            msg: "Url shortened successfully",
+            shortUrl: <FE-URL>/<url-id>
+          }
+      
+      Step 3:
+        Says somebody visits the shorturl,
+
+          <fe-url>/<url-id>
+
+          get the url-id using useParams
+          trigger an api call to get the long-url
+          {
+            long-url: actual-long-url
+          } 
+          redirect to the long-url from our Front-End
+          location.replace(longUrl); will redirect to the long-url
+
+
+Task:
+  Complete Both the Task with above ideas
+  Day 37: https://docs.google.com/document/d/1I7zwdMN77E3JwSXtgp2pVKgcAqPBHOwczishsKak-Qk/edit
+
+  Day 38: https://docs.google.com/document/d/1nD7fzgzw5UmFSpnHK2FWVadnp4y7EaND26_AqkZzSTw/edit
+
+FSD Design:
+
+  Will be using AI tools ( Tabnine, ChatGpt, GPTEngineer )
+
+  Specific Use Case,
+    1. Social Media
+      1. User Sign-Up
+      2. /profile ( to view our profile )
+      3. Posts ( we can view the posts by every person in the applcation )
+      4. CRUD operation for Your posts
+      5. Update Operation for Your profile
+
+    2. E-Commerce
+    3. Simple Form Teacher / Student Creation
+
+  Notification Msg:
+
+    Simple CRUD Application with the following Packages
+    FE:
+      1. React Router DOM
+      2. @reduxjs/toolkit & react-redux
+
+    BE:
+      1. Express
+      2. cors
+
+
+
